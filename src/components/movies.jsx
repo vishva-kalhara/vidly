@@ -6,17 +6,34 @@ import { paginate } from "../utils/paginate";
 
 class Movies extends Component {
 	render() {
-		const { movies,  onDelete, onPageChange, itemsCount : count, pageSize, currPage } =
-			this.props;
+		const {
+			movies,
+			onDelete,
+			onPageChange,
+			itemsCount: count,
+			pageSize,
+			currPage,
+			selectedGenre,
+		} = this.props;
 
-		if (count == 0) return <h6>Movies not found</h6>;
+		if (count.length == 0) return <h6>Movies not found</h6>;
 
-		const newMovies = paginate(movies, currPage, pageSize);
+		let filteredMovies = [];
+		console.log(selectedGenre)
+		if (selectedGenre && selectedGenre._id) {
+			filteredMovies = movies.filter(
+				(m) => m.genre._id === selectedGenre._id
+			);
+		} else {
+			filteredMovies = movies;
+		}
+
+		const newMovies = paginate(filteredMovies, currPage, pageSize);
 		// console.log(newMovies);
 
 		return (
 			<React.Fragment>
-				<h6>Showing {count} in the database</h6>
+				<h6>Showing {filteredMovies.length} in the database</h6>
 				<table className="table">
 					<thead>
 						<tr>
@@ -38,7 +55,7 @@ class Movies extends Component {
 					</tbody>
 				</table>
 				<Pagination
-					itemsCount={count}
+					itemsCount={filteredMovies.length}
 					pageSize={pageSize}
 					onPageChange={onPageChange}
 					currPage={currPage}
