@@ -3,8 +3,24 @@ import MovieItem from './common/movieItem';
 import { getMovies } from '../services/fakeMovieService';
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
+import MoviesTable from "./moviesTable";
+import _ from "lodash";
 
 class Movies extends Component {
+	state = {
+		sortColumn: { path: "title", order: "asc" },
+	};
+
+	handleSort = (selSort) => {
+		const selectedOrder =
+			this.state.sortColumn.path === selSort &&
+			this.state.sortColumn.order === "asc"
+				? "desc"
+				: "asc";
+		this.setState({ sortColumn: { path: selSort, order: selectedOrder } });
+		console.log(this.state);
+	};
+
 	render() {
 		const {
 			movies,
@@ -16,11 +32,13 @@ class Movies extends Component {
 			selectedGenre,
 		} = this.props;
 
+		const { sortColumn } = this.state;
+
 		if (count.length == 0) return <h6>Movies not found</h6>;
 
 		let filteredMovies = [];
-		console.log(selectedGenre)
-		if (selectedGenre && selectedGenre._id) {
+		// console.log(selectedGenre);
+		if (selectedGenre && selectedGenre._id != "-1") {
 			filteredMovies = movies.filter(
 				(m) => m.genre._id === selectedGenre._id
 			);
@@ -28,32 +46,23 @@ class Movies extends Component {
 			filteredMovies = movies;
 		}
 
-		const newMovies = paginate(filteredMovies, currPage, pageSize);
+		const sortedMovies = _.orderBy(
+			filteredMovies,
+			[sortColumn.path],
+			[sortColumn.order]
+		);
+
+		const newMovies = paginate(sortedMovies, currPage, pageSize);
 		// console.log(newMovies);
 
 		return (
 			<React.Fragment>
 				<h6>Showing {filteredMovies.length} in the database</h6>
-				<table className="table">
-					<thead>
-						<tr>
-							<th scope="col">Title</th>
-							<th scope="col">Genre</th>
-							<th scope="col">Stock</th>
-							<th scope="col">Rate</th>
-							<th scope="col"></th>
-						</tr>
-					</thead>
-					<tbody>
-						{newMovies.map((movie) => (
-							<MovieItem
-								key={movie._id}
-								onDelete={onDelete}
-								movie={movie}
-							></MovieItem>
-						))}
-					</tbody>
-				</table>
+				<MoviesTable
+					items={newMovies}
+					onDelete={onDelete}
+					onSort={this.handleSort}
+				></MoviesTable>
 				<Pagination
 					itemsCount={filteredMovies.length}
 					pageSize={pageSize}

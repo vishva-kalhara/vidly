@@ -13,7 +13,7 @@ const FilerItems = (props) => {
 		<ul className="list-group">
 			{items.map((item) => (
 				<li
-					key={item[valueProperty]}
+					key={(item[valueProperty] ??= "1")}
 					onClick={() => onChangeFilter(item)}
 					className={`list-group-item ${
 						selectedGenre[textProperty] === item[textProperty]

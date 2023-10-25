@@ -12,11 +12,11 @@ class App extends Component {
 		genres: [],
 		currPage: 1,
 		pageSize: 3,
-		selectedGenre: {name : "All Genres"},
+		selectedGenre: { name: "All Genres", _id: "-1" },
 	};
 
 	componentDidMount() {
-		const genres = [{ name: "All Genres" }, ...getGenres()];
+		const genres = [{ name: "All Genres", _id: "-1" }, ...getGenres()];
 		this.setState({ movies: getMovies(), genres });
 	}
 
@@ -29,9 +29,11 @@ class App extends Component {
 		this.setState({ currPage });
 	};
 
+
+
 	handleFilter = (genre) => {
 		const selGenre = genre.name === "All Genres" ? genre : genre;
-		this.setState({ selectedGenre: selGenre, currPage : 1 });
+		this.setState({ selectedGenre: selGenre, currPage: 1 });
 	};
 
 	render() {
@@ -60,6 +62,7 @@ class App extends Component {
 							pageSize={pageSize}
 							currPage={currPage}
 							selectedGenre={selectedGenre}
+							onSort={this.handleSort}
 						></Movies>
 					</div>
 				</div>
