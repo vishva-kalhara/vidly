@@ -11,14 +11,8 @@ class Movies extends Component {
 		sortColumn: { path: "title", order: "asc" },
 	};
 
-	handleSort = (selSort) => {
-		const selectedOrder =
-			this.state.sortColumn.path === selSort &&
-			this.state.sortColumn.order === "asc"
-				? "desc"
-				: "asc";
-		this.setState({ sortColumn: { path: selSort, order: selectedOrder } });
-		console.log(this.state);
+	handleSort = (sortColumn) => {
+		this.setState({ sortColumn });
 	};
 
 	render() {
@@ -62,6 +56,7 @@ class Movies extends Component {
 					items={newMovies}
 					onDelete={onDelete}
 					onSort={this.handleSort}
+					sortColumn={sortColumn}
 				></MoviesTable>
 				<Pagination
 					itemsCount={filteredMovies.length}
