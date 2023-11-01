@@ -5,6 +5,11 @@ import Movies from './components/movies';
 import FilerItems from "./components/common/FilerItems";
 import { getMovies } from "./services/fakeMovieService";
 import { getGenres } from "./services/fakeGenreService";
+import NavBar from "./components/navBar";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Customers from "./components/customers";
+import Rentals from "./components/rentals";
+import SingleMovie from "./components/singleMovie";
 
 class App extends Component {
 	state = {
@@ -29,8 +34,6 @@ class App extends Component {
 		this.setState({ currPage });
 	};
 
-
-
 	handleFilter = (genre) => {
 		const selGenre = genre.name === "All Genres" ? genre : genre;
 		this.setState({ selectedGenre: selGenre, currPage: 1 });
@@ -40,33 +43,51 @@ class App extends Component {
 		const { length: count } = this.state.movies;
 		const { pageSize, currPage, genres, selectedGenre } = this.state;
 
-		return (
-			<div style={{ paddingTop: 30 }} className="container">
-				<div className="row">
-					<div className="col-3">
-						<FilerItems
-							items={genres}
-							onChangeFilter={this.handleFilter}
-							selectedGenre={selectedGenre}
-						></FilerItems>
-					</div>
-					<div
-						className="col-9"
-						style={{ paddingLeft: "20px", boxSizing: "border-box" }}
-					>
-						<Movies
-							movies={this.state.movies}
-							onDelete={this.handledelete}
-							onPageChange={this.handlePageChange}
-							itemsCount={count}
-							pageSize={pageSize}
-							currPage={currPage}
-							selectedGenre={selectedGenre}
-							onSort={this.handleSort}
-						></Movies>
-					</div>
+		const mainMarkup = (
+			<div className="row">
+				<div className="col-3">
+					<FilerItems
+						items={genres}
+						onChangeFilter={this.handleFilter}
+						selectedGenre={selectedGenre}
+					></FilerItems>
+				</div>
+				<div
+					className="col-9"
+					style={{
+						paddingLeft: "20px",
+						boxSizing: "border-box",
+					}}
+				>
+					<Movies
+						movies={this.state.movies}
+						onDelete={this.handledelete}
+						onPageChange={this.handlePageChange}
+						itemsCount={count}
+						pageSize={pageSize}
+						currPage={currPage}
+						selectedGenre={selectedGenre}
+						onSort={this.handleSort}
+					></Movies>
 				</div>
 			</div>
+		);
+
+		return (
+			<>
+				<NavBar></NavBar>
+				<div style={{ paddingTop: 30 }} className="container">
+					<Routes>
+						<Route path="/movies">
+							<Route index element={mainMarkup} />
+							<Route path=":id" element={<SingleMovie />} />
+						</Route>
+						<Route path="/" element={<Navigate to="/movies" />} />
+						<Route path="/customers" element={<Customers />} />
+						<Route path="/rentals" element={<Rentals />} />
+					</Routes>
+				</div>
+			</>
 		);
 	}
 }

@@ -47,10 +47,12 @@ class Movies extends Component {
 		);
 
 		const newMovies = paginate(sortedMovies, currPage, pageSize);
-		// console.log(newMovies);
+
+		// const {location} = useLocation();
+		// if(location.seach)
 
 		return (
-			<React.Fragment>
+			<>
 				<h6>Showing {filteredMovies.length} in the database</h6>
 				<MoviesTable
 					items={newMovies}
@@ -64,7 +66,7 @@ class Movies extends Component {
 					onPageChange={onPageChange}
 					currPage={currPage}
 				></Pagination>
-			</React.Fragment>
+			</>
 		);
 	}
 }
